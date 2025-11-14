@@ -30,6 +30,12 @@ const state = {
   pending: new Set(),
 };
 
+const originalButtons = {
+  fetch: selectors.buttons.fetch?.textContent,
+  parse: selectors.buttons.parse?.textContent,
+  correlate: selectors.buttons.correlate?.textContent,
+};
+
 const randomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 const deepClone = (value) => JSON.parse(JSON.stringify(value));
 const rotateForward = (array) => {
@@ -46,7 +52,7 @@ function setStatus(message, isError = false) {
   selectors.status.classList.toggle("error", isError);
 }
 
-function setPending(key, flag) {
+function setPending(key, flag, busyLabel) {
   if (flag) {
     state.pending.add(key);
   } else {
@@ -58,6 +64,13 @@ function setPending(key, flag) {
     .forEach((btn) => {
       btn.disabled = disabled;
       btn.setAttribute("aria-busy", String(disabled));
+      if (disabled && busyLabel) {
+        btn.dataset.originalLabel = btn.textContent;
+        btn.textContent = busyLabel;
+      } else if (!disabled && btn.dataset.originalLabel) {
+        btn.textContent = btn.dataset.originalLabel;
+        delete btn.dataset.originalLabel;
+      }
     });
 }
 
@@ -163,6 +176,7 @@ function upsertChart(key, ctxId, config) {
 }
 
 function renderCharts(data) {
+  if (!window.Chart) return;
   const sshTrendLabels = data.ssh_failures_over_time.map((entry) => formatHourLabel(entry.time));
   const sshTrendValues = data.ssh_failures_over_time.map((entry) => entry.count);
   upsertChart(
@@ -413,7 +427,7 @@ function mutateCorrelation(current) {
 
 async function simulateIntelFetch() {
   if (!state.data) return;
-  setPending("fetch", true);
+  setPending("fetch", true, "Fetching…");
   setStatus("Contacting threat feeds (demo)...");
   await delay(randomInt(500, 900));
   const { data, delta } = mutateIntel(state.data);
@@ -426,7 +440,7 @@ async function simulateIntelFetch() {
 
 async function simulateLogParse() {
   if (!state.data) return;
-  setPending("parse", true);
+  setPending("parse", true, "Parsing…");
   setStatus("Parsing SSH and Apache logs...");
   await delay(randomInt(600, 1000));
   const { data, delta } = mutateLogs(state.data);
@@ -440,7 +454,7 @@ async function simulateLogParse() {
 
 async function simulateCorrelation() {
   if (!state.data) return;
-  setPending("correlate", true);
+  setPending("correlate", true, "Correlating…");
   setStatus("Running correlation and refreshing analytics...");
   await delay(randomInt(650, 1100));
   const { data, alert } = mutateCorrelation(state.data);
@@ -465,13 +479,24 @@ function registerEventHandlers() {
 }
 
 async function bootstrap() {
-  setPending("bootstrap", true);
+  setPending("bootstrap", true, "Loading…");
   setStatus("Loading curated SOC telemetry...");
   try {
     configureChartDefaults();
-    const data = await fetchSampleData();
-    state.baseData = deepClone(data);
-    state.data = deepClone(data);
+    const embedded = window.__CYBERSENTINEL_DEMO__?.embeddedData;
+    let data = null;
+    try {
+      data = await fetchSampleData();
+    } catch (networkError) {
+      console.warn("Falling back to embedded demo payload", networkError);
+      if (embedded) {
+        data = deepClone(embedded);
+      } else {
+        throw networkError;
+      }
+    }
+    state.baseData = deepClone(data ?? embedded);
+    state.data = deepClone(data ?? embedded);
     hydrateDashboard();
     setStatus("Dashboard ready. Explore the workflow controls →");
   } catch (error) {
