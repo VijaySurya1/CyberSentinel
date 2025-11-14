@@ -1,6 +1,10 @@
 # CyberSentinel
 
 <p align="center">
+  <img src="docs/images/banner.svg" alt="CyberSentinel repository banner" width="100%" />
+</p>
+
+<p align="center">
   <a href="https://github.com/sr-857/CyberSentinel/releases">
     <img alt="Version" src="https://img.shields.io/github/v/tag/sr-857/CyberSentinel?label=version&sort=semver&color=1f6feb" />
   </a>
@@ -13,25 +17,57 @@
   <a href="https://github.com/sr-857/CyberSentinel/actions/workflows/ci.yml">
     <img alt="CI Status" src="https://github.com/sr-857/CyberSentinel/actions/workflows/ci.yml/badge.svg" />
   </a>
-  <img alt="Docker Ready" src="https://img.shields.io/badge/docker-ready-0db7ed.svg?logo=docker&logoColor=white" />
+  <a href="https://github.com/sr-857/CyberSentinel/actions/workflows/codeql.yml">
+    <img alt="CodeQL" src="https://github.com/sr-857/CyberSentinel/actions/workflows/codeql.yml/badge.svg" />
+  </a>
+  <img alt="Tests" src="https://img.shields.io/badge/tests-passing-brightgreen.svg" />
+  <a href="https://hub.docker.com/r/sr857/cybersentinel">
+    <img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/sr857/cybersentinel" />
+  </a>
   <a href="https://github.com/sr-857/CyberSentinel/stargazers">
     <img alt="GitHub Stars" src="https://img.shields.io/github/stars/sr-857/CyberSentinel?style=flat&color=facc15" />
   </a>
 </p>
 
+<p align="center">
+  <img src="docs/images/demo.gif" alt="CyberSentinel SOC workflow demo" width="70%" />
+</p>
+
+<p align="center">
+  <img src="docs/images/dashboard.png" alt="CyberSentinel dashboard overview" width="88%" />
+</p>
+
+<p align="center">
+  <img src="docs/images/alerts.png" alt="CyberSentinel alert table screenshot" width="88%" />
+</p>
+
+<p align="center">
+  <img src="docs/images/charts.png" alt="CyberSentinel analytics charts screenshot" width="88%" />
+</p>
+
 CyberSentinel is a production-ready threat intelligence and log correlation dashboard. It ingests IOCs from open threat feeds, parses SSH/Apache server logs, correlates log activity against known malicious indicators, and presents analysts with an actionable browser-based dashboard complete with KPI tiles and Chart.js visualisations.
+
+## System Requirements
+
+- Python ≥ 3.11
+- Docker ≥ 24 (for containerized deployment)
+- OS: Linux, macOS, or Windows (via WSL2 recommended)
+- Memory: ≥ 512 MB (2 GB recommended for container workloads)
+- Git + Make (optional) for developer tooling
 
 ## Architecture Overview
 
-```
-CyberSentinel/
-├── backend/        # Flask REST API, persistence, correlation logic
-├── frontend/       # Static dashboard (HTML/JS/CSS) served via Nginx
-├── data/           # Sample logs and intelligence storage volume
-├── Dockerfile      # Python 3.11 + Gunicorn container for backend
-├── docker-compose.yml
-└── README.md
-```
+<p align="center">
+  <img src="docs/images/architecture.png" alt="CyberSentinel platform architecture" width="92%" />
+</p>
+
+The high-contrast platform flow highlights:
+
+- **Threat Intel (blue)** — AbuseIPDB + AlienVault OTX collectors with deduplication and confidence scoring.
+- **Log Ingestion (orange)** — Deterministic SSH/Apache parsing with regex capture groups.
+- **Correlation Engine (purple)** — Severity scoring that differentiates SSH brute force vs. web anomalies.
+- **Analytics Core (teal)** — Pandas-powered aggregation feeding KPI tiles, charts, and alert summaries.
+- **Analyst Dashboard (green)** — Chart.js visualization layer connected to the Flask REST API.
 
 ### Backend
 - **Flask API** exposes endpoints to fetch threat intel, parse logs, run IOC correlation, produce analytics, and retrieve alerts.
@@ -52,7 +88,24 @@ CyberSentinel/
 - `data/logs` contains realistic sample SSH and Apache logs.
 - `data/intel` persists the downloaded IOCs (mounted volume in Docker).
 
+## Design Decisions
+
+- **SQLite for persistence** — Embedded, zero-ops database with ACID semantics ideal for single-node SOC demos and quick resets.
+- **Flask REST API** — Lightweight, composable routing with blueprints ready for Gunicorn deployment.
+- **Chart.js visualisations** — Straightforward chart primitives that render crisply in GitHub Pages demos.
+- **Threat intel normalisation** — Canonical indicator schema with source, first/last seen, and confidence fields for downstream enrichment.
+- **Correlation severity model** — SSH matches default to `high`, web anomalies as `medium`, with room to extend to rule-based scoring.
+- **Regex-driven log parsing** — Explicit, unit-tested patterns enabling deterministic extraction for security investigations.
+
 ## Quickstart
+
+### One-command local install
+
+```bash
+./install.sh
+```
+
+The script provisions a local virtual environment, installs dependencies, initialises SQLite, and launches the Flask dev server.
 
 ### Live Demo / GitHub Pages Preview
 - Explore the static walkthrough at **https://sr-857.github.io/CyberSentinel** for an at-a-glance dashboard tour powered by sample data.
@@ -91,14 +144,6 @@ python -m backend.app          # launch Flask server (uses built-in dev server)
 
 Then open `frontend/index.html` directly or serve via your preferred static server.
 
-## System Architecture
-
-![CyberSentinel Architecture](docs/images/architecture.png)
-
-- Threat feeds and log sources flow into modular ingestion/parsing services.
-- SQLite persists indicators, parsed events, and generated alerts, providing a deterministic data backbone.
-- The analyst dashboard consumes REST endpoints for intel, logs, alerts, analytics, and a one-click refresh pipeline.
-
 ## API Endpoints
 
 | Method | Endpoint                | Description                                         |
@@ -114,13 +159,15 @@ Then open `frontend/index.html` directly or serve via your preferred static serv
 | GET    | `/api/analytics/summary`| Aggregated KPIs/charts data for the dashboard       |
 | GET/POST | `/api/workflow/refresh`| One-click intel → logs → correlation pipeline run |
 
+### OpenAPI Specification
+
+- Browse the minimal contract at [`docs/api/openapi.yaml`](docs/api/openapi.yaml) or import into Swagger UI/Postman for contract-first demos.
+
 ## Dashboard Preview
 
-> _Screenshots coming soon_
-
-- `frontend/index.html`
-- Primary interactions via **Fetch Intel**, **Parse Logs**, **Run Correlation** buttons.
-- KPI tiles update live alongside Chart.js visualisations for SOC situational awareness.
+- Screenshots above show the interactive KPI tiles, alert tables, and analytics panels rendered by the SPA dashboard.
+- Primary interactions: **Fetch Intel → Parse Logs → Run Correlation → Workflow Refresh**.
+- Chart.js canvases highlight SSH failures over time, alert severity mix, and top offending IPs.
 
 ## Recruiter Walkthrough
 
@@ -147,6 +194,16 @@ Talking points:
 - **Highlights portfolio-ready polish**: live badges, architecture diagram, and recruiter guidance make the project immediately legible to hiring managers.
 - **Invites collaboration** through clearly scoped contribution issues and sample data for rapid onboarding.
 
+## SOC Scenario Demo
+
+**Scenario: SSH brute force escalation**
+
+1. Threat intel collectors ingest a suspicious IP (`203.0.113.7`) flagged by AbuseIPDB with high confidence.
+2. SSH parser detects 40 failed logins against privileged accounts within five minutes.
+3. Correlation engine scores a **Critical** alert, persisting evidence and severity rationale.
+4. Analytics layer spikes alert severity counts, surfacing the IOC in KPI tiles and Chart.js breakdowns.
+5. Analyst uses the dashboard to confirm malicious behaviour and trigger next-step response (ticketing, firewall block, etc.).
+
 ## Security Notes
 - Use API keys via environment variables—never commit them.
 - Logs and intel volumes are mounted read-only/read-write to prevent tampering.
@@ -161,11 +218,65 @@ Talking points:
 4. Implement scheduled background jobs/APScheduler for continuous intel ingestion.
 5. Integrate with ticketing systems for automated alert escalation and reporting.
 
+## Folder Structure
+
+```
+CyberSentinel/
+├── backend/
+│   ├── __init__.py
+│   ├── analytics.py
+│   ├── app.py
+│   ├── correlation.py
+│   ├── db.py
+│   ├── intel_feeds.py
+│   ├── log_parser.py
+│   └── requirements.txt
+├── data/
+│   ├── intel/
+│   └── logs/
+├── docs/
+│   ├── api/openapi.yaml
+│   ├── images/
+│   ├── index.html
+│   └── releases/
+├── frontend/
+│   ├── dashboard.js
+│   ├── index.html
+│   └── styles.css
+├── tests/
+│   ├── __init__.py
+│   ├── test_analytics.py
+│   ├── test_correlation.py
+│   └── test_log_parser.py
+├── install.sh
+├── CHANGELOG.md
+├── Dockerfile
+├── docker-compose.yml
+└── README.md
+```
+
+## Quality & Testing
+
+- **Unit tests** live in `tests/` and validate log parsing, IOC correlation, and analytics aggregation.
+- **CI pipeline** executes linting, `py_compile`, and `pytest` on every push/pr.
+- **CodeQL security scanning** ensures static analysis coverage across the Python backend.
+
 ## Roadmap
 - [ ] Webhook alert notifications ([#1](https://github.com/sr-857/CyberSentinel/issues/1))
 - [ ] CI smoke tests ([#2](https://github.com/sr-857/CyberSentinel/issues/2))
 - [ ] Role-based dashboard access
 - [ ] Scheduled IOC ingestion
+
+## Milestone Plan
+
+Public GitHub milestones to pin next-phase commitments:
+
+- **v1.1.0 — Alert Webhooks**: outbound Slack/Teams/email webhook integrations.
+- **v1.2.0 — Scheduled IOC Ingestion**: APScheduler-based background collectors.
+- **v1.3.0 — Role-Based Access**: analyst vs. admin dashboard modes with authentication.
+- **v1.4.0 — Agent-based Log Collection**: lightweight endpoint agent streaming logs to CyberSentinel.
+
+Track milestone burndown from **Issues → Milestones** to communicate delivery cadence.
 
 ## GitHub Publishing Checklist
 - `gh repo edit sr-857/CyberSentinel --description "🛡️ CyberSentinel — Threat Intel + Log Correlation Dashboard…"` to set the tagline and SEO topics (`cybersecurity`, `threat-intelligence`, `soc-automation`, `flask`, `python`, `log-analysis`, `ioc-correlation`, `chartjs`, `docker`, `sqlite`, `security-analytics`).
@@ -173,6 +284,20 @@ Talking points:
 - Publish notes via `gh release create v1.0.0 --title "CyberSentinel v1.0.0" --notes-file docs/releases/v1.0.0.md`.
 - Upload the banner designed in `docs/banner_concept.md` to polish the repository header.
 - Pin the “Quick Demo for Recruiters” snippet near the top of the README or project description for instant context.
+
+## Docker Image Publishing
+
+```
+docker build -t sr857/cybersentinel:latest .
+docker login -u sr857
+docker push sr857/cybersentinel:latest
+```
+
+Once pushed, the Docker Hub badge above will reflect pull counts automatically.
+
+## CHANGELOG
+
+All releases are tracked in [`CHANGELOG.md`](CHANGELOG.md) using Keep a Changelog formatting.
 
 ## MIT License
 

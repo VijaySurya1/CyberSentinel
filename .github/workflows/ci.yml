@@ -26,6 +26,10 @@ jobs:
           pip install --upgrade pip
           pip install -r backend/requirements.txt
 
+      - name: Install test dependencies
+        run: |
+          pip install pytest
+
       - name: Lint (py_compile)
         run: |
           python -m py_compile $(git ls-files "*.py")
@@ -36,3 +40,6 @@ jobs:
           import backend.app
           print("Flask app imports OK")
           PY
+
+      - name: Run unit tests
+        run: pytest

@@ -1,0 +1,313 @@
+openapi: 3.1.0
+info:
+  title: CyberSentinel API
+  description: REST interface for ingesting threat intelligence, parsing logs, correlating Indicators of Compromise, and retrieving analytics.
+  version: 1.0.0
+servers:
+  - url: https://sr-857.github.io/CyberSentinel
+    description: Static demo responses (sample data)
+  - url: http://localhost:5000
+    description: Local development server
+paths:
+  /health:
+    get:
+      summary: Health check
+      operationId: getHealth
+      responses:
+        '200':
+          description: Application status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+  /api/intel:
+    get:
+      summary: Retrieve stored threat intelligence indicators
+      operationId: listIndicators
+      responses:
+        '200':
+          description: Array of Indicators of Compromise
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Indicator'
+  /api/intel/fetch:
+    get:
+      summary: Trigger a fetch of configured threat intelligence feeds
+      description: GET and POST behave the same for convenience.
+      operationId: fetchIndicators
+      responses:
+        '200':
+          description: Result of fetch operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FetchResult'
+    post:
+      summary: Trigger a fetch of configured threat intelligence feeds
+      operationId: fetchIndicatorsPost
+      responses:
+        '200':
+          description: Result of fetch operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FetchResult'
+  /api/logs/parse:
+    get:
+      summary: Parse local SSH and Apache logs
+      operationId: parseLogs
+      responses:
+        '200':
+          description: Parsed events per source
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParsedLogs'
+    post:
+      summary: Parse local SSH and Apache logs
+      operationId: parseLogsPost
+      requestBody:
+        description: Optional override directory for log parsing
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                log_dir:
+                  type: string
+      responses:
+        '200':
+          description: Parsed events per source
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParsedLogs'
+  /api/logs:
+    get:
+      summary: Retrieve parsed logs
+      operationId: listLogs
+      parameters:
+        - in: query
+          name: source
+          schema:
+            type: string
+            enum: [ssh, apache]
+          description: Optional log source filter
+      responses:
+        '200':
+          description: Log events for the requested source
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/LogEvent'
+  /api/correlation/run:
+    post:
+      summary: Run IOC correlation pipeline
+      operationId: runCorrelation
+      responses:
+        '200':
+          description: Alerts produced from correlation run
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CorrelationResult'
+    get:
+      summary: Run IOC correlation pipeline (convenience)
+      operationId: runCorrelationGet
+      responses:
+        '200':
+          description: Alerts produced from correlation run
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CorrelationResult'
+  /api/correlate:
+    get:
+      summary: Alias for /api/correlation/run
+      operationId: correlateAliasGet
+      responses:
+        '200':
+          description: Alerts produced from correlation run
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CorrelationResult'
+    post:
+      summary: Alias for /api/correlation/run
+      operationId: correlateAliasPost
+      responses:
+        '200':
+          description: Alerts produced from correlation run
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CorrelationResult'
+  /api/alerts:
+    get:
+      summary: Retrieve generated alerts
+      operationId: listAlerts
+      responses:
+        '200':
+          description: Alert records ordered by recency
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Alert'
+  /api/analytics/summary:
+    get:
+      summary: Dashboard metrics aggregation
+      operationId: getAnalyticsSummary
+      responses:
+        '200':
+          description: Aggregated KPIs and chart data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyticsSummary'
+  /api/workflow/refresh:
+    post:
+      summary: Run full intel → logs → correlation workflow
+      operationId: refreshWorkflow
+      responses:
+        '200':
+          description: Summary of pipeline execution
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowRun'
+    get:
+      summary: Run full intel → logs → correlation workflow
+      operationId: refreshWorkflowGet
+      responses:
+        '200':
+          description: Summary of pipeline execution
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowRun'
+components:
+  schemas:
+    Indicator:
+      type: object
+      properties:
+        indicator:
+          type: string
+        type:
+          type: string
+        source:
+          type: string
+        first_seen:
+          type: string
+          format: date-time
+        last_seen:
+          type: string
+          format: date-time
+        confidence:
+          type: integer
+    FetchResult:
+      type: object
+      properties:
+        stored:
+          type: integer
+        fetched:
+          type: integer
+    ParsedLogs:
+      type: object
+      properties:
+        ssh:
+          type: array
+          items:
+            $ref: '#/components/schemas/LogEvent'
+        apache:
+          type: array
+          items:
+            $ref: '#/components/schemas/LogEvent'
+    LogEvent:
+      type: object
+      properties:
+        log_source:
+          type: string
+        event_time:
+          type: string
+        ip_address:
+          type: string
+        username:
+          type: string
+        request:
+          type: string
+        status_code:
+          type: integer
+    Alert:
+      type: object
+      properties:
+        indicator:
+          type: string
+        log_source:
+          type: string
+        severity:
+          type: string
+        message:
+          type: string
+        event_time:
+          type: string
+        created_at:
+          type: string
+        meta:
+          type: object
+    CorrelationResult:
+      type: object
+      properties:
+        alerts_created:
+          type: integer
+        alerts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Alert'
+    AnalyticsSummary:
+      type: object
+      properties:
+        totals:
+          type: object
+        ssh_top_ips:
+          type: array
+          items:
+            type: object
+        apache_top_paths:
+          type: array
+          items:
+            type: object
+        alert_severity_counts:
+          type: array
+          items:
+            type: object
+    WorkflowRun:
+      type: object
+      properties:
+        intel:
+          $ref: '#/components/schemas/FetchResult'
+        logs:
+          $ref: '#/components/schemas/ParsedLogs'
+        alerts:
+          $ref: '#/components/schemas/CorrelationResult'
+        analytics:
+          $ref: '#/components/schemas/AnalyticsSummary'
