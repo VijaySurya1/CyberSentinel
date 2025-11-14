@@ -59,11 +59,20 @@ function setPending(key, flag, busyLabel) {
       btn.disabled = disabled;
       btn.setAttribute("aria-busy", String(disabled));
       if (disabled && busyLabel) {
-        btn.dataset.originalLabel = btn.textContent;
+        try {
+          btn.dataset.originalLabel = btn.textContent;
+        } catch (e) {
+          // dataset may not exist in very old browsers
+        }
         btn.textContent = busyLabel;
-      } else if (!disabled && btn.dataset.originalLabel) {
-        btn.textContent = btn.dataset.originalLabel;
-        delete btn.dataset.originalLabel;
+      } else if (!disabled) {
+        const original = btn.dataset ? btn.dataset.originalLabel : null;
+        if (original) {
+          btn.textContent = original;
+          if (btn.dataset) {
+            delete btn.dataset.originalLabel;
+          }
+        }
       }
     });
 }
@@ -504,7 +513,8 @@ async function bootstrap() {
     setStatus("Dashboard ready. Explore the workflow controls →");
   } catch (error) {
     console.error(error);
-    setStatus("Failed to initialise demo data.", true);
+    const message = error && error.message ? error.message : String(error);
+    setStatus(`Failed to initialise demo data: ${message}`, true);
   } finally {
     setPending("bootstrap", false);
   }
