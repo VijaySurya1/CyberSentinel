@@ -129,6 +129,8 @@ Then open `frontend/index.html` directly or serve via your preferred static serv
 - Primary interactions: **Fetch Intel → Parse Logs → Run Correlation → Workflow Refresh**.
 - Chart.js canvases highlight SSH failures over time, alert severity mix, and top offending IPs.
 - Alerts surface IOC matches with severity scoring, timestamps, and contextual metadata for triage.
+- Responsive analyst workspace with sidebar metrics, live status messaging, and workflow walkthrough.
+- Accessibility-conscious controls: keyboard focus states, ARIA-live updates, and disabled-state management during long-running tasks.
 
 ## Recruiter Walkthrough
 

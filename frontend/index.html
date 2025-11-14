@@ -4,123 +4,183 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CyberSentinel Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="styles.css" />
   </head>
-  <body>
-    <header>
-      <h1>CyberSentinel Threat Intelligence Dashboard</h1>
-      <p class="subtitle">Monitor indicators, parse logs, and surface actionable alerts in one place.</p>
+  <body class="page">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand__logo" aria-hidden="true">⚡</div>
+        <div class="brand__meta">
+          <span class="brand__title">CyberSentinel</span>
+          <span class="brand__subtitle">Threat Intel · Log Correlation · SOC KPIs</span>
+        </div>
+      </div>
+      <nav class="topbar__actions" aria-label="Primary actions">
+        <button id="fetch-intel" class="btn btn--accent" type="button">Fetch Intel</button>
+        <button id="parse-logs" class="btn" type="button">Parse Logs</button>
+        <button id="run-correlation" class="btn" type="button">Run Correlation</button>
+      </nav>
     </header>
 
-    <main>
-      <section class="controls">
-        <button id="fetch-intel" class="primary">Fetch Intel</button>
-        <button id="parse-logs">Parse Logs</button>
-        <button id="run-correlation">Run Correlation</button>
-        <span id="status" role="status" aria-live="polite"></span>
-      </section>
-
-      <section class="metrics">
-        <div class="metric-card">
-          <h3>SSH Events</h3>
-          <p id="total-ssh">0</p>
+    <main class="layout">
+      <aside class="panel panel--sidebar" aria-label="Operations overview">
+        <h2 class="panel__title">Pipeline Status</h2>
+        <div class="status" role="status" aria-live="polite">
+          <span class="status__dot" aria-hidden="true"></span>
+          <span id="status" class="status__text">Waiting for action…</span>
         </div>
-        <div class="metric-card">
-          <h3>Apache Events</h3>
-          <p id="total-apache">0</p>
+
+        <div class="metrics">
+          <article class="metric-card" aria-live="polite">
+            <h3>SSH Events</h3>
+            <p id="total-ssh">0</p>
+          </article>
+          <article class="metric-card" aria-live="polite">
+            <h3>Apache Events</h3>
+            <p id="total-apache">0</p>
+          </article>
+          <article class="metric-card" aria-live="polite">
+            <h3>Active Alerts</h3>
+            <p id="total-alerts">0</p>
+          </article>
         </div>
-        <div class="metric-card">
-          <h3>Active Alerts</h3>
-          <p id="total-alerts">0</p>
-        </div>
-      </section>
 
-      <section class="charts">
-        <article>
-          <h2>SSH Fails Over Time</h2>
-          <canvas id="ssh-trend-chart" height="220"></canvas>
-        </article>
-        <article>
-          <h2>Top Offending IPs</h2>
-          <canvas id="ssh-top-ips-chart" height="220"></canvas>
-        </article>
-        <article>
-          <h2>Apache Status Codes</h2>
-          <canvas id="apache-status-chart" height="220"></canvas>
-        </article>
-        <article>
-          <h2>Alert Severity Mix</h2>
-          <canvas id="alert-severity-chart" height="220"></canvas>
-        </article>
-      </section>
+        <section class="panel__cta" aria-label="Quick walkthrough">
+          <h3>Workflow</h3>
+          <ol>
+            <li>Fetch latest IOCs from AbuseIPDB &amp; OTX.</li>
+            <li>Parse SSH and Apache logs for new events.</li>
+            <li>Run correlation to generate alerts &amp; analytics.</li>
+          </ol>
+        </section>
+      </aside>
 
-      <section class="grid">
-        <article>
-          <h2>Threat Intelligence</h2>
-          <table id="intel-table">
-            <thead>
-              <tr>
-                <th>Indicator</th>
-                <th>Type</th>
-                <th>Source</th>
-                <th>Last Seen</th>
-                <th>Confidence</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </article>
+      <section class="panel panel--main" aria-label="Analyst workspace">
+        <section class="panel__group" aria-label="Analytics charts">
+          <article class="chart-card">
+            <header>
+              <h2>SSH Failures (last 7 hours)</h2>
+              <span class="chart-card__subtitle">Detections per hour aggregated from parsed logs</span>
+            </header>
+            <canvas id="ssh-trend-chart" height="260"></canvas>
+          </article>
+          <article class="chart-card">
+            <header>
+              <h2>Top Offending IPs</h2>
+              <span class="chart-card__subtitle">Failed SSH attempts ranked by volume</span>
+            </header>
+            <canvas id="ssh-top-ips-chart" height="260"></canvas>
+          </article>
+          <article class="chart-card">
+            <header>
+              <h2>Apache Status Codes</h2>
+              <span class="chart-card__subtitle">Distribution of HTTP statuses from access logs</span>
+            </header>
+            <canvas id="apache-status-chart" height="260"></canvas>
+          </article>
+          <article class="chart-card">
+            <header>
+              <h2>Alert Severity Mix</h2>
+              <span class="chart-card__subtitle">Correlation output grouped by severity score</span>
+            </header>
+            <canvas id="alert-severity-chart" height="260"></canvas>
+          </article>
+        </section>
 
-        <article>
-          <h2>SSH Login Failures</h2>
-          <table id="ssh-table">
-            <thead>
-              <tr>
-                <th>Time</th>
-                <th>IP</th>
-                <th>User</th>
-                <th>Message</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </article>
+        <section class="panel__group panel__group--tables" aria-label="Operational tables">
+          <article class="data-card">
+            <header>
+              <h2>Threat Intelligence</h2>
+              <p>IOC inventory normalised across AbuseIPDB and AlienVault OTX.</p>
+            </header>
+            <div class="table-wrapper">
+              <table id="intel-table">
+                <thead>
+                  <tr>
+                    <th scope="col">Indicator</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Source</th>
+                    <th scope="col">Last Seen</th>
+                    <th scope="col">Confidence</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </article>
 
-        <article>
-          <h2>Apache Access Logs</h2>
-          <table id="apache-table">
-            <thead>
-              <tr>
-                <th>Time</th>
-                <th>IP</th>
-                <th>Request</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </article>
+          <article class="data-card">
+            <header>
+              <h2>SSH Login Failures</h2>
+              <p>Failed authentication attempts enriched with usernames and messages.</p>
+            </header>
+            <div class="table-wrapper">
+              <table id="ssh-table">
+                <thead>
+                  <tr>
+                    <th scope="col">Timestamp</th>
+                    <th scope="col">IP</th>
+                    <th scope="col">User</th>
+                    <th scope="col">Message</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </article>
 
-        <article class="wide">
-          <h2>Alerts</h2>
-          <table id="alerts-table">
-            <thead>
-              <tr>
-                <th>Created</th>
-                <th>Indicator</th>
-                <th>Source</th>
-                <th>Severity</th>
-                <th>Message</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </article>
+          <article class="data-card">
+            <header>
+              <h2>Apache Access Logs</h2>
+              <p>Web requests parsed with HTTP verbs, resources, and response codes.</p>
+            </header>
+            <div class="table-wrapper">
+              <table id="apache-table">
+                <thead>
+                  <tr>
+                    <th scope="col">Timestamp</th>
+                    <th scope="col">IP</th>
+                    <th scope="col">Request</th>
+                    <th scope="col">Status</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </article>
+
+          <article class="data-card data-card--wide">
+            <header>
+              <h2>Alerts</h2>
+              <p>IOC matches correlated across the estate with severity scoring.</p>
+            </header>
+            <div class="table-wrapper">
+              <table id="alerts-table">
+                <thead>
+                  <tr>
+                    <th scope="col">Created</th>
+                    <th scope="col">Indicator</th>
+                    <th scope="col">Source</th>
+                    <th scope="col">Severity</th>
+                    <th scope="col">Message</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </article>
+        </section>
       </section>
     </main>
 
-    <footer>
-      <p>CyberSentinel &mdash; Operational threat intelligence for modern defenders.</p>
+    <footer class="footer">
+      <p>© <span id="footer-year"></span> CyberSentinel · Analyst-ready threat intel automation.</p>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" integrity="sha384-jGf4bm/FvGV8eK3opgDdGztqKqRR3YKHyCuXapnwYfJOLLmObAun1vDLteA94ppI" crossorigin="anonymous"></script>
