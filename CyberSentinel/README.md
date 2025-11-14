@@ -125,6 +125,13 @@ Talking points:
 4. Implement scheduled background jobs/APScheduler for continuous intel ingestion.
 5. Integrate with ticketing systems for automated alert escalation and reporting.
 
+## GitHub Publishing Checklist
+- `gh repo edit sr-857/CyberSentinel --description "🛡️ CyberSentinel — Threat Intel + Log Correlation Dashboard…"` to set the tagline and SEO topics (`cybersecurity`, `threat-intelligence`, `soc-automation`, `flask`, `python`, `log-analysis`, `ioc-correlation`, `chartjs`, `docker`, `sqlite`, `security-analytics`).
+- Tag the release: `git tag -a v1.0.0 -m "CyberSentinel v1.0.0 — Initial analyst-ready release"` then `git push origin v1.0.0`.
+- Publish notes via `gh release create v1.0.0 --title "CyberSentinel v1.0.0" --notes-file docs/releases/v1.0.0.md`.
+- Upload the banner designed in `docs/banner_concept.md` to polish the repository header.
+- Pin the “Quick Demo for Recruiters” snippet near the top of the README or project description for instant context.
+
 ## MIT License
 
 ```
