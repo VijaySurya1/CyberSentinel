@@ -30,12 +30,6 @@ const state = {
   pending: new Set(),
 };
 
-const originalButtons = {
-  fetch: selectors.buttons.fetch?.textContent,
-  parse: selectors.buttons.parse?.textContent,
-  correlate: selectors.buttons.correlate?.textContent,
-};
-
 const randomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 const deepClone = (value) => JSON.parse(JSON.stringify(value));
 const rotateForward = (array) => {
@@ -318,8 +312,12 @@ async function fetchSampleData() {
 }
 
 function configureChartDefaults() {
+  if (!window.Chart || !Chart.defaults) {
+    return;
+  }
   Chart.defaults.color = "#e2e8f0";
-  Chart.defaults.font.family = getComputedStyle(document.documentElement).getPropertyValue("font-family") || "Inter, sans-serif";
+  const fontFamily = getComputedStyle(document.documentElement).getPropertyValue("font-family") || "Inter, sans-serif";
+  Chart.defaults.font.family = fontFamily.replace(/^["']|["']$/g, "");
 }
 
 function stampFooterYear() {
@@ -363,7 +361,9 @@ function mutateLogs(current) {
   next.ssh_table = [newSshEntry, ...current.ssh_table].slice(0, Math.max(5, current.ssh_table.length));
 
   const trend = current.ssh_failures_over_time.slice(1);
-  trend.push({ time: nowIso, count: Math.max(6, current.ssh_failures_over_time.at(-1)?.count ?? 12) + randomInt(-4, 5) });
+  const lastEntry = current.ssh_failures_over_time[current.ssh_failures_over_time.length - 1];
+  const lastCount = lastEntry ? lastEntry.count : 12;
+  trend.push({ time: nowIso, count: Math.max(6, lastCount) + randomInt(-4, 5) });
   next.ssh_failures_over_time = trend;
 
   const ipBucket = next.ssh_top_ips.find((entry) => entry.ip === newSshEntry.ip_address);
@@ -484,19 +484,22 @@ async function bootstrap() {
   try {
     configureChartDefaults();
     const embedded = window.__CYBERSENTINEL_DEMO__?.embeddedData;
-    let data = null;
+    let data = embedded ? deepClone(embedded) : null;
     try {
-      data = await fetchSampleData();
+      const remote = await fetchSampleData();
+      if (remote) {
+        data = remote;
+      }
     } catch (networkError) {
       console.warn("Falling back to embedded demo payload", networkError);
-      if (embedded) {
-        data = deepClone(embedded);
-      } else {
-        throw networkError;
-      }
     }
-    state.baseData = deepClone(data ?? embedded);
-    state.data = deepClone(data ?? embedded);
+
+    if (!data) {
+      throw new Error("No demo dataset available.");
+    }
+
+    state.baseData = deepClone(data);
+    state.data = deepClone(data);
     hydrateDashboard();
     setStatus("Dashboard ready. Explore the workflow controls →");
   } catch (error) {
