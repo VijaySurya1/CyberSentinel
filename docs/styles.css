@@ -235,6 +235,25 @@ body.page {
   transition: transform 120ms ease, box-shadow 160ms ease, background 160ms ease;
 }
 
+.btn:visited {
+  color: var(--text-strong);
+  text-decoration: none;
+}
+
+.btn:hover,
+.btn:focus,
+.btn:active {
+  text-decoration: none;
+}
+
+a.btn,
+a.btn:visited,
+a.btn:hover,
+a.btn:focus,
+a.btn:active {
+  text-decoration: none;
+}
+
 .btn:hover,
 .btn:focus-visible {
   background: rgba(148, 163, 184, 0.32);
