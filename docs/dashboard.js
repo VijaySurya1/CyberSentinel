@@ -495,6 +495,31 @@ function configureChartDefaults() {
   Chart.defaults.color = "#e2e8f0";
   const fontFamily = getComputedStyle(document.documentElement).getPropertyValue("font-family") || "Inter, sans-serif";
   Chart.defaults.font.family = fontFamily.replace(/^["']|["']$/g, "");
+  Chart.defaults.font.size = 12;
+  Chart.defaults.responsive = true;
+  Chart.defaults.maintainAspectRatio = false;
+  Chart.defaults.animation = {
+    duration: 350,
+    easing: "easeOutQuart",
+  };
+  Chart.defaults.animations = Chart.defaults.animations || {};
+  Chart.defaults.elements = Chart.defaults.elements || {};
+  Chart.defaults.elements.line = {
+    tension: 0.3,
+    borderWidth: 2,
+    borderCapStyle: "round",
+    borderJoinStyle: "round",
+    fill: true,
+  };
+  Chart.defaults.elements.point = {
+    radius: 0,
+    hitRadius: 6,
+    hoverRadius: 3,
+  };
+  Chart.defaults.elements.bar = {
+    borderRadius: 8,
+    borderSkipped: false,
+  };
 }
 
 function stampFooterYear() {

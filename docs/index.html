@@ -131,28 +131,36 @@
               <h2>SSH Failures (last 7 hours)</h2>
               <span class="chart-card__subtitle">Detections per hour aggregated from parsed logs</span>
             </header>
-            <canvas id="ssh-trend-chart" height="260"></canvas>
+            <div class="chart-card__canvas">
+              <canvas id="ssh-trend-chart"></canvas>
+            </div>
           </article>
           <article class="chart-card">
             <header>
               <h2>Top Offending IPs</h2>
               <span class="chart-card__subtitle">Failed SSH attempts ranked by volume</span>
             </header>
-            <canvas id="ssh-top-ips-chart" height="260"></canvas>
+            <div class="chart-card__canvas">
+              <canvas id="ssh-top-ips-chart"></canvas>
+            </div>
           </article>
           <article class="chart-card">
             <header>
               <h2>Apache Status Codes</h2>
               <span class="chart-card__subtitle">Distribution of HTTP statuses from access logs</span>
             </header>
-            <canvas id="apache-status-chart" height="260"></canvas>
+            <div class="chart-card__canvas">
+              <canvas id="apache-status-chart"></canvas>
+            </div>
           </article>
           <article class="chart-card">
             <header>
               <h2>Alert Severity Mix</h2>
               <span class="chart-card__subtitle">Correlation output grouped by severity score</span>
             </header>
-            <canvas id="alert-severity-chart" height="260"></canvas>
+            <div class="chart-card__canvas">
+              <canvas id="alert-severity-chart"></canvas>
+            </div>
           </article>
         </section>
 
